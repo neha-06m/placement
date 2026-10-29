@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { UserPlus, GraduationCap, Building2, ShieldCheck } from 'lucide-react';
+import { UserPlus, GraduationCap, Building2, ShieldCheck, Mail, Phone, Lock, BookOpen, Award, MapPin, Globe, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Alert } from '../components/Alert';
 
@@ -100,13 +100,13 @@ export const Register = () => {
   };
 
   return (
-    <div className="auth-wrapper" style={{ maxWidth: '580px' }}>
+    <div className="auth-wrapper" style={{ maxWidth: '600px' }}>
       <div className="auth-header">
         <h1>Create Your Account</h1>
         <p>Join PlaceMate Campus Placement System</p>
       </div>
 
-      <div className="card">
+      <div className="card" style={{ padding: '2rem' }}>
         {/* Role Selection Tabs */}
         <div className="role-tabs">
           <button
@@ -114,7 +114,7 @@ export const Register = () => {
             className={`role-tab-btn ${role === 'student' ? 'active' : ''}`}
             onClick={() => setRole('student')}
           >
-            <GraduationCap size={16} />
+            <GraduationCap size={16} style={{ color: role === 'student' ? '#818CF8' : 'inherit' }} />
             <span>Student</span>
           </button>
           <button
@@ -122,7 +122,7 @@ export const Register = () => {
             className={`role-tab-btn ${role === 'company' ? 'active' : ''}`}
             onClick={() => setRole('company')}
           >
-            <Building2 size={16} />
+            <Building2 size={16} style={{ color: role === 'company' ? '#2DD4BF' : 'inherit' }} />
             <span>Company</span>
           </button>
           <button
@@ -130,7 +130,7 @@ export const Register = () => {
             className={`role-tab-btn ${role === 'admin' ? 'active' : ''}`}
             onClick={() => setRole('admin')}
           >
-            <ShieldCheck size={16} />
+            <ShieldCheck size={16} style={{ color: role === 'admin' ? '#C084FC' : 'inherit' }} />
             <span>Admin</span>
           </button>
         </div>
@@ -141,13 +141,13 @@ export const Register = () => {
           {/* Common Fields */}
           <div className="form-group">
             <label className="form-label" htmlFor="name">
-              {role === 'company' ? 'Recruiter Contact Name' : 'Full Name'}
+              {role === 'company' ? 'Recruiter Contact Name *' : 'Full Legal Name *'}
             </label>
             <input
               id="name"
               type="text"
               className="form-input"
-              placeholder={role === 'company' ? 'e.g. Jane Doe (HR Lead)' : 'e.g. Aarav Sharma'}
+              placeholder={role === 'company' ? 'e.g. Ananya Sen (HR Lead)' : 'e.g. Aarav Sharma'}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -157,13 +157,14 @@ export const Register = () => {
           <div className="grid-cols-2">
             <div className="form-group">
               <label className="form-label" htmlFor="email">
-                Email Address
+                <Mail size={13} style={{ color: 'var(--text-muted)' }} />
+                <span>Email Address *</span>
               </label>
               <input
                 id="email"
                 type="email"
                 className="form-input"
-                placeholder={role === 'student' ? 'student@university.edu' : 'recruiter@company.com'}
+                placeholder={role === 'student' ? 'aarav@college.edu' : 'recruiter@company.com'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -171,7 +172,8 @@ export const Register = () => {
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="phone">
-                Phone Number
+                <Phone size={13} style={{ color: 'var(--text-muted)' }} />
+                <span>Phone Number</span>
               </label>
               <input
                 id="phone"
@@ -186,9 +188,18 @@ export const Register = () => {
 
           {/* Student Specific Fields */}
           {role === 'student' && (
-            <div style={{ background: 'var(--bg-subtle)', padding: '1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--primary)' }}>
-                Academic Details
+            <div
+              style={{
+                background: 'var(--bg-subtle)',
+                border: '1px solid var(--border-light)',
+                padding: '1.25rem',
+                borderRadius: 'var(--radius-sm)',
+                marginBottom: '1.25rem'
+              }}
+            >
+              <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.85rem', color: '#818CF8', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <BookOpen size={15} />
+                <span>Academic & Eligibility Credentials</span>
               </div>
               <div className="grid-cols-2">
                 <div className="form-group">
@@ -219,7 +230,7 @@ export const Register = () => {
                   </select>
                 </div>
               </div>
-              <div className="grid-cols-2" style={{ marginTop: '0.5rem' }}>
+              <div className="grid-cols-2" style={{ marginTop: '0.25rem' }}>
                 <div className="form-group">
                   <label className="form-label" htmlFor="batchYear">Passing Out Batch</label>
                   <select
@@ -254,12 +265,21 @@ export const Register = () => {
 
           {/* Company Specific Fields */}
           {role === 'company' && (
-            <div style={{ background: 'var(--bg-subtle)', padding: '1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--role-company)' }}>
-                Company Organization Details
+            <div
+              style={{
+                background: 'var(--bg-subtle)',
+                border: '1px solid var(--border-light)',
+                padding: '1.25rem',
+                borderRadius: 'var(--radius-sm)',
+                marginBottom: '1.25rem'
+              }}
+            >
+              <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.85rem', color: '#2DD4BF', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Building2 size={15} />
+                <span>Organization Details</span>
               </div>
               <div className="form-group">
-                <label className="form-label" htmlFor="companyName">Company Name</label>
+                <label className="form-label" htmlFor="companyName">Company Name *</label>
                 <input
                   id="companyName"
                   type="text"
@@ -299,9 +319,18 @@ export const Register = () => {
 
           {/* Admin Specific Fields */}
           {role === 'admin' && (
-            <div style={{ background: 'var(--bg-subtle)', padding: '1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--role-admin)' }}>
-                Placement Cell Credentials
+            <div
+              style={{
+                background: 'var(--bg-subtle)',
+                border: '1px solid var(--border-light)',
+                padding: '1.25rem',
+                borderRadius: 'var(--radius-sm)',
+                marginBottom: '1.25rem'
+              }}
+            >
+              <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.85rem', color: '#C084FC', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <ShieldCheck size={15} />
+                <span>Placement Cell Authority</span>
               </div>
               <div className="grid-cols-2">
                 <div className="form-group">
@@ -334,7 +363,10 @@ export const Register = () => {
           {/* Password Fields */}
           <div className="grid-cols-2">
             <div className="form-group">
-              <label className="form-label" htmlFor="password">Password (min 6 chars)</label>
+              <label className="form-label" htmlFor="password">
+                <Lock size={13} style={{ color: 'var(--text-muted)' }} />
+                <span>Password (min 6 chars) *</span>
+              </label>
               <input
                 id="password"
                 type="password"
@@ -346,7 +378,10 @@ export const Register = () => {
               />
             </div>
             <div className="form-group">
-              <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
+              <label className="form-label" htmlFor="confirmPassword">
+                <Lock size={13} style={{ color: 'var(--text-muted)' }} />
+                <span>Confirm Password *</span>
+              </label>
               <input
                 id="confirmPassword"
                 type="password"
@@ -363,16 +398,25 @@ export const Register = () => {
             type="submit"
             className="btn btn-primary btn-block"
             disabled={isSubmitting}
-            style={{ marginTop: '0.75rem' }}
+            style={{ marginTop: '1rem', padding: '0.75rem' }}
           >
-            <UserPlus size={18} />
-            <span>{isSubmitting ? 'Registering...' : `Register as ${role.charAt(0).toUpperCase() + role.slice(1)}`}</span>
+            {isSubmitting ? (
+              <>
+                <Loader2 size={18} className="spin" />
+                <span>Registering Account...</span>
+              </>
+            ) : (
+              <>
+                <UserPlus size={18} />
+                <span>Register as {role.charAt(0).toUpperCase() + role.slice(1)}</span>
+              </>
+            )}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
           Already registered?{' '}
-          <Link to="/login" style={{ fontWeight: 600 }}>
+          <Link to="/login" style={{ fontWeight: 600, color: '#818CF8' }}>
             Sign in here
           </Link>
         </div>

@@ -4,7 +4,6 @@ import {
   GraduationCap,
   BookOpen,
   Award,
-  Link as LinkIcon,
   Globe,
   Code2,
   FileText,
@@ -15,8 +14,11 @@ import {
   CheckCircle2,
   AlertCircle,
   Save,
-  Loader2
+  Loader2,
+  ArrowLeft,
+  X
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getStudentProfile, updateStudentProfile, uploadResume, downloadResume } from '../../api/profileApi';
 import { Alert } from '../../components/Alert';
 
@@ -157,7 +159,7 @@ export const StudentProfilePage = () => {
       const res = await updateStudentProfile(payload);
       if (res.success && res.profile) {
         setProfileCompletion(res.profile.profileCompletion);
-        setMessage({ type: 'success', text: 'Profile updated and saved to database successfully!' });
+        setMessage({ type: 'success', text: 'Profile updated and saved to MongoDB successfully!' });
       }
     } catch (err) {
       setMessage({ type: 'danger', text: err.message || 'Failed to update profile.' });
@@ -214,35 +216,41 @@ export const StudentProfilePage = () => {
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-        <Loader2 size={32} className="spin" style={{ color: 'var(--primary)', margin: '0 auto 1rem' }} />
+        <Loader2 size={36} className="spin" style={{ color: 'var(--primary)', margin: '0 auto 1.25rem' }} />
         <p style={{ color: 'var(--text-muted)' }}>Loading student profile from database...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '980px', margin: '0 auto' }}>
       {/* Page Header */}
       <div className="page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <h1 className="page-title">Student Profile</h1>
-            <span className="badge badge-student">Applicant Details</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <h1 className="page-title">Student Profile & Credentials</h1>
+            <span className="badge badge-student">Applicant Verification</span>
           </div>
           <p className="page-subtitle">
-            Manage your academic credentials, technical skills, projects, and verified resume.
+            Manage your academic records, technical skillset, project portfolio, and verified PDF resume.
           </p>
         </div>
 
-        <button
-          onClick={handleSaveProfile}
-          className="btn btn-primary"
-          disabled={saving}
-          style={{ minWidth: '140px' }}
-        >
-          {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
-          <span>{saving ? 'Saving...' : 'Save Profile'}</span>
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Link to="/dashboard/student" className="btn btn-outline" style={{ gap: '0.4rem' }}>
+            <ArrowLeft size={15} />
+            <span>Dashboard</span>
+          </Link>
+          <button
+            onClick={handleSaveProfile}
+            className="btn btn-primary"
+            disabled={saving}
+            style={{ minWidth: '145px', gap: '0.45rem' }}
+          >
+            {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
+            <span>{saving ? 'Saving...' : 'Save Profile'}</span>
+          </button>
+        </div>
       </div>
 
       {message.text && (
@@ -253,30 +261,36 @@ export const StudentProfilePage = () => {
         />
       )}
 
-      {/* Completion Meter */}
+      {/* Completion Meter Card */}
       <div
         className="card"
         style={{
-          marginBottom: '1.5rem',
-          backgroundColor: '#ffffff',
+          marginBottom: '1.75rem',
+          backgroundColor: 'var(--bg-card)',
           borderLeft: '4px solid var(--primary)'
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
           <div>
-            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-main)' }}>
-              Profile Completion Status
+            <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-main)' }}>
+              Profile Readiness Score
             </span>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginLeft: '0.5rem' }}>
-              (Higher completion increases recruiter visibility)
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginLeft: '0.65rem' }}>
+              (Higher completion increases recruiter shortlisting by 3x)
             </span>
           </div>
-          <div style={{ fontWeight: 800, fontSize: '1.25rem', color: profileCompletion >= 80 ? 'var(--success)' : 'var(--primary)' }}>
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '1.35rem',
+              color: profileCompletion >= 80 ? 'var(--success-text)' : 'var(--primary)'
+            }}
+          >
             {profileCompletion}%
           </div>
         </div>
 
-        <div style={{ width: '100%', height: '10px', backgroundColor: 'var(--bg-subtle)', borderRadius: '9999px', overflow: 'hidden' }}>
+        <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--bg-subtle)', borderRadius: '9999px', overflow: 'hidden' }}>
           <div
             style={{
               width: `${profileCompletion}%`,
@@ -290,13 +304,13 @@ export const StudentProfilePage = () => {
 
       <form onSubmit={handleSaveProfile}>
         {/* Personal & College Info */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
               <h2 className="card-title">Personal & Contact Info</h2>
-              <p className="card-subtitle">Basic identity and communication details</p>
+              <p className="card-subtitle">Basic identity and official communication channels</p>
             </div>
-            <User size={20} color="var(--primary)" />
+            <User size={20} style={{ color: 'var(--primary)' }} />
           </div>
 
           <div className="grid-cols-2">
@@ -353,13 +367,13 @@ export const StudentProfilePage = () => {
         </div>
 
         {/* Academic Details */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
-              <h2 className="card-title">Academic Details</h2>
-              <p className="card-subtitle">Course, branch, passing batch and academic performance</p>
+              <h2 className="card-title">Academic Records & Eligibility</h2>
+              <p className="card-subtitle">Course degree, branch, passing year, and official CGPA</p>
             </div>
-            <GraduationCap size={20} color="var(--primary)" />
+            <GraduationCap size={20} style={{ color: '#818CF8' }} />
           </div>
 
           <div className="grid-cols-2">
@@ -423,28 +437,28 @@ export const StudentProfilePage = () => {
                 value={cgpa}
                 onChange={(e) => setCgpa(e.target.value)}
               />
-              <span className="form-hint">Used for automatic company drive eligibility filters</span>
+              <span className="form-hint">Used for automatic company drive cutoff screening</span>
             </div>
           </div>
         </div>
 
-        {/* Skills & Online Profiles */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        {/* Technical Skills & Social Handles */}
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
-              <h2 className="card-title">Technical Skills & Social Handles</h2>
-              <p className="card-subtitle">Showcase your technical capabilities and public code portfolios</p>
+              <h2 className="card-title">Technical Skills & Public Handles</h2>
+              <p className="card-subtitle">Showcase your technical capabilities and code repositories</p>
             </div>
-            <Award size={20} color="var(--primary)" />
+            <Award size={20} style={{ color: 'var(--warning-text)' }} />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Key Skills</label>
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            <label className="form-label">Key Technical Skills</label>
+            <div style={{ display: 'flex', gap: '0.65rem', marginBottom: '0.85rem' }}>
               <input
                 type="text"
                 className="form-input"
-                placeholder="Type skill (e.g. React, Java, Docker, SQL) and click Add"
+                placeholder="Type skill (e.g. React, Node.js, Python, Docker) and press Add"
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -458,7 +472,7 @@ export const StudentProfilePage = () => {
                 type="button"
                 onClick={handleAddSkill}
                 className="btn btn-outline"
-                style={{ flexShrink: 0 }}
+                style={{ flexShrink: 0, gap: '0.4rem' }}
               >
                 <Plus size={16} />
                 <span>Add Skill</span>
@@ -466,10 +480,21 @@ export const StudentProfilePage = () => {
             </div>
 
             {/* Skill tags */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', minHeight: '36px' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+                minHeight: '40px',
+                padding: '0.65rem',
+                backgroundColor: 'var(--bg-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-light)'
+              }}
+            >
               {skills.length === 0 ? (
                 <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  No skills added yet. Add skills to match company requirements.
+                  No skills added yet. Add your core languages, frameworks, and tools.
                 </span>
               ) : (
                 skills.map((skill, index) => (
@@ -478,10 +503,11 @@ export const StudentProfilePage = () => {
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
+                      gap: '0.4rem',
                       backgroundColor: 'var(--primary-light)',
-                      color: 'var(--primary)',
-                      padding: '0.3rem 0.65rem',
+                      color: '#818CF8',
+                      border: '1px solid var(--primary-border)',
+                      padding: '0.3rem 0.75rem',
                       borderRadius: '9999px',
                       fontSize: '0.825rem',
                       fontWeight: 600
@@ -496,11 +522,14 @@ export const StudentProfilePage = () => {
                         border: 'none',
                         cursor: 'pointer',
                         color: 'inherit',
-                        padding: 0
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        opacity: 0.8
                       }}
                       title="Remove skill"
                     >
-                      ×
+                      <X size={13} />
                     </button>
                   </span>
                 ))
@@ -511,8 +540,8 @@ export const StudentProfilePage = () => {
           <div className="grid-cols-2" style={{ marginTop: '1.25rem' }}>
             <div className="form-group">
               <label className="form-label" htmlFor="linkedInUrl">
-                <Globe size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
-                LinkedIn Profile URL
+                <Globe size={14} style={{ color: 'var(--text-muted)' }} />
+                <span>LinkedIn Profile URL</span>
               </label>
               <input
                 id="linkedInUrl"
@@ -526,8 +555,8 @@ export const StudentProfilePage = () => {
 
             <div className="form-group">
               <label className="form-label" htmlFor="gitHubUrl">
-                <Code2 size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
-                GitHub Profile URL
+                <Code2 size={14} style={{ color: 'var(--text-muted)' }} />
+                <span>GitHub Profile URL</span>
               </label>
               <input
                 id="gitHubUrl"
@@ -542,16 +571,17 @@ export const StudentProfilePage = () => {
         </div>
 
         {/* Projects Section */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
-              <h2 className="card-title">Projects</h2>
-              <p className="card-subtitle">Highlight academic and personal software or engineering projects</p>
+              <h2 className="card-title">Project Portfolio</h2>
+              <p className="card-subtitle">Showcase software, hardware, or engineering projects</p>
             </div>
             <button
               type="button"
               onClick={handleAddProject}
               className="btn btn-outline btn-sm"
+              style={{ gap: '0.4rem' }}
             >
               <Plus size={14} />
               <span>Add Project</span>
@@ -559,9 +589,9 @@ export const StudentProfilePage = () => {
           </div>
 
           {projects.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '1.5rem', backgroundColor: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+            <div className="empty-state" style={{ padding: '2rem 1.5rem' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                No projects listed. Click <strong>"Add Project"</strong> above to showcase your work to recruiters.
+                No projects listed. Click <strong style={{ color: 'var(--text-main)' }}>"Add Project"</strong> above to showcase your best engineering accomplishments.
               </p>
             </div>
           ) : (
@@ -586,7 +616,7 @@ export const StudentProfilePage = () => {
                       className="btn btn-danger btn-sm"
                       title="Remove this project"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={13} />
                       <span>Remove</span>
                     </button>
                   </div>
@@ -616,11 +646,11 @@ export const StudentProfilePage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Description & Highlights</label>
+                    <label className="form-label">Description & Key Contributions</label>
                     <textarea
                       rows={2}
                       className="form-textarea"
-                      placeholder="Brief overview of features, architecture, and your contributions..."
+                      placeholder="Brief overview of problem solved, architecture, and technology stack used..."
                       value={proj.description}
                       onChange={(e) => handleProjectChange(idx, 'description', e.target.value)}
                     />
@@ -632,16 +662,16 @@ export const StudentProfilePage = () => {
         </div>
 
         {/* Resume Upload Card */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
-              <h2 className="card-title">Resume Document (PDF)</h2>
-              <p className="card-subtitle">Upload your verified resume for placement drives</p>
+              <h2 className="card-title">Verified Resume (PDF)</h2>
+              <p className="card-subtitle">Official verified document submitted with campus drive applications</p>
             </div>
-            <FileText size={20} color="var(--primary)" />
+            <FileText size={20} style={{ color: 'var(--primary)' }} />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
             {resume?.filePath ? (
               <div
                 style={{
@@ -650,18 +680,20 @@ export const StudentProfilePage = () => {
                   justifyContent: 'space-between',
                   backgroundColor: 'var(--success-bg)',
                   border: '1px solid var(--success-border)',
-                  padding: '1rem 1.25rem',
-                  borderRadius: 'var(--radius-sm)'
+                  padding: '1.1rem 1.35rem',
+                  borderRadius: 'var(--radius-sm)',
+                  flexWrap: 'wrap',
+                  gap: '0.75rem'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <CheckCircle2 size={24} color="var(--success)" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                  <CheckCircle2 size={24} style={{ color: 'var(--success-text)' }} />
                   <div>
-                    <div style={{ fontWeight: 700, color: '#166534', fontSize: '0.95rem' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--success-text)', fontSize: '0.95rem' }}>
                       {resume.originalName || 'student_resume.pdf'}
                     </div>
-                    <div style={{ color: '#14532d', fontSize: '0.8rem' }}>
-                      Uploaded: {resume.uploadedAt ? new Date(resume.uploadedAt).toLocaleDateString() : 'Active'} •{' '}
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>
+                      Uploaded: {resume.uploadedAt ? new Date(resume.uploadedAt).toLocaleDateString() : 'Active on Record'} •{' '}
                       {resume.fileSize ? `${Math.round(resume.fileSize / 1024)} KB` : 'Verified PDF'}
                     </div>
                   </div>
@@ -672,7 +704,6 @@ export const StudentProfilePage = () => {
                   onClick={handleDownloadResume}
                   className="btn btn-outline btn-sm"
                   disabled={downloadingResume}
-                  style={{ backgroundColor: '#ffffff' }}
                 >
                   <Download size={14} />
                   <span>{downloadingResume ? 'Downloading...' : 'Download Resume'}</span>
@@ -683,41 +714,41 @@ export const StudentProfilePage = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.75rem',
+                  gap: '0.85rem',
                   backgroundColor: 'var(--warning-bg)',
                   border: '1px solid var(--warning-border)',
-                  padding: '0.85rem 1.15rem',
+                  padding: '1rem 1.25rem',
                   borderRadius: 'var(--radius-sm)'
                 }}
               >
-                <AlertCircle size={20} color="var(--warning)" />
-                <span style={{ fontSize: '0.875rem', color: '#92400e' }}>
-                  No resume uploaded yet. Recruiters require a verified PDF resume before reviewing applications.
+                <AlertCircle size={22} style={{ color: 'var(--warning-text)', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.875rem', color: 'var(--warning-text)' }}>
+                  No resume uploaded yet. Placement officers require a verified PDF resume before considering applications.
                 </span>
               </div>
             )}
 
-            {/* Upload form */}
+            {/* Upload form dropzone */}
             <div
               style={{
                 border: '2px dashed var(--border-light)',
                 borderRadius: 'var(--radius-md)',
-                padding: '1.5rem',
+                padding: '1.75rem',
                 textAlign: 'center',
                 backgroundColor: 'var(--bg-subtle)'
               }}
             >
-              <Upload size={28} style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }} />
-              <div style={{ fontSize: '0.925rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.25rem' }}>
-                {uploadingResume ? 'Uploading and validating PDF...' : 'Upload New Resume'}
+              <Upload size={30} style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }} />
+              <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.25rem' }}>
+                {uploadingResume ? 'Uploading and validating PDF...' : 'Upload or Replace Resume'}
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                Only PDF files (.pdf) are accepted. Maximum size: 2 MB.
+              <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginBottom: '1.1rem' }}>
+                Only standard PDF files (.pdf) are accepted. Maximum size: 2 MB limit.
               </p>
 
               <label className="btn btn-primary btn-sm" style={{ cursor: uploadingResume ? 'not-allowed' : 'pointer' }}>
                 <Upload size={14} />
-                <span>{uploadingResume ? 'Processing...' : 'Choose PDF File'}</span>
+                <span>{uploadingResume ? 'Processing...' : 'Select PDF Resume'}</span>
                 <input
                   type="file"
                   accept=".pdf,application/pdf"
@@ -734,9 +765,9 @@ export const StudentProfilePage = () => {
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary btn-lg"
             disabled={saving}
-            style={{ minWidth: '160px' }}
+            style={{ minWidth: '180px', gap: '0.5rem' }}
           >
             {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
             <span>{saving ? 'Saving...' : 'Save Profile Changes'}</span>

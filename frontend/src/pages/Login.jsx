@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LogIn, GraduationCap, Building2, ShieldCheck } from 'lucide-react';
+import { LogIn, GraduationCap, Building2, ShieldCheck, Lock, Mail, Loader2, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Alert } from '../components/Alert';
 
@@ -26,7 +26,7 @@ export const Login = () => {
       const targetPath = from || getDashboardPath(data.user.role);
       navigate(targetPath, { replace: true });
     } catch (err) {
-      setError(err.message || 'Failed to sign in. Please check your credentials.');
+      setError(err.message || 'Failed to sign in. Please verify your credentials.');
     } finally {
       setIsSubmitting(false);
     }
@@ -52,37 +52,43 @@ export const Login = () => {
         <p>Sign in to your PlaceMate portal account</p>
       </div>
 
-      <div className="card">
+      <div className="card" style={{ padding: '2rem' }}>
         {error && <Alert type="danger" message={error} onClose={() => setError('')} />}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label" htmlFor="email">
-              Email Address
+              <Mail size={14} style={{ color: 'var(--text-muted)' }} />
+              <span>Email Address</span>
             </label>
             <input
               id="email"
               type="email"
               className="form-input"
-              placeholder="e.g. name@university.edu"
+              placeholder="name@university.edu or recruiter@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="password">
-              Password
-            </label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="form-label" htmlFor="password">
+                <Lock size={14} style={{ color: 'var(--text-muted)' }} />
+                <span>Password</span>
+              </label>
+            </div>
             <input
               id="password"
               type="password"
               className="form-input"
-              placeholder="Enter your password"
+              placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
           </div>
 
@@ -90,31 +96,43 @@ export const Login = () => {
             type="submit"
             className="btn btn-primary btn-block"
             disabled={isSubmitting}
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: '1.25rem', padding: '0.75rem' }}
           >
-            <LogIn size={18} />
-            <span>{isSubmitting ? 'Signing in...' : 'Sign In'}</span>
+            {isSubmitting ? (
+              <>
+                <Loader2 size={18} className="spin" />
+                <span>Signing in to portal...</span>
+              </>
+            ) : (
+              <>
+                <LogIn size={18} />
+                <span>Sign In</span>
+              </>
+            )}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
           Don't have an account yet?{' '}
-          <Link to="/register" style={{ fontWeight: 600 }}>
-            Create one here
+          <Link to="/register" style={{ fontWeight: 600, color: '#818CF8' }}>
+            Register here
           </Link>
         </div>
 
         {/* Quick Demo Pre-fill helper */}
         <div className="demo-box">
-          <div className="demo-title">Quick Demo Login Helpers</div>
+          <div className="demo-title">
+            <span>⚡ Quick Demo Credentials</span>
+          </div>
           <div className="demo-btns">
             <button
               type="button"
               onClick={() => fillQuickDemo('student')}
               className="btn btn-outline btn-sm"
               title="Pre-fill student demo credentials"
+              style={{ flex: 1 }}
             >
-              <GraduationCap size={14} />
+              <GraduationCap size={14} style={{ color: '#818CF8' }} />
               <span>Student</span>
             </button>
             <button
@@ -122,8 +140,9 @@ export const Login = () => {
               onClick={() => fillQuickDemo('company')}
               className="btn btn-outline btn-sm"
               title="Pre-fill recruiter demo credentials"
+              style={{ flex: 1 }}
             >
-              <Building2 size={14} />
+              <Building2 size={14} style={{ color: '#2DD4BF' }} />
               <span>Company</span>
             </button>
             <button
@@ -131,8 +150,9 @@ export const Login = () => {
               onClick={() => fillQuickDemo('admin')}
               className="btn btn-outline btn-sm"
               title="Pre-fill admin demo credentials"
+              style={{ flex: 1 }}
             >
-              <ShieldCheck size={14} />
+              <ShieldCheck size={14} style={{ color: '#C084FC' }} />
               <span>Admin</span>
             </button>
           </div>

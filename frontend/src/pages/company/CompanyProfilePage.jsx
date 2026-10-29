@@ -11,8 +11,10 @@ import {
   Save,
   Loader2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getCompanyProfile, updateCompanyProfile } from '../../api/profileApi';
 import { Alert } from '../../components/Alert';
 
@@ -86,7 +88,7 @@ export const CompanyProfilePage = () => {
     }
 
     if (!officialEmail.trim()) {
-      setMessage({ type: 'danger', text: 'Official company email is required.' });
+      setMessage({ type: 'danger', text: 'Official corporate email is required.' });
       return;
     }
 
@@ -122,35 +124,41 @@ export const CompanyProfilePage = () => {
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-        <Loader2 size={32} className="spin" style={{ color: 'var(--role-company)', margin: '0 auto 1rem' }} />
+        <Loader2 size={36} className="spin" style={{ color: 'var(--role-company)', margin: '0 auto 1.25rem' }} />
         <p style={{ color: 'var(--text-muted)' }}>Loading company profile from database...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '980px', margin: '0 auto' }}>
       {/* Page Header */}
       <div className="page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <h1 className="page-title">Company Profile</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <h1 className="page-title">Company Profile & Accreditation</h1>
             <span className="badge badge-company">Employer Verification</span>
           </div>
           <p className="page-subtitle">
-            Manage your organization identity, recruitment contact, and campus accreditation status.
+            Manage your organization identity, recruitment point of contact, and campus accreditation status.
           </p>
         </div>
 
-        <button
-          onClick={handleSave}
-          className="btn btn-primary"
-          disabled={saving}
-          style={{ minWidth: '150px' }}
-        >
-          {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
-          <span>{saving ? 'Saving...' : 'Save Profile'}</span>
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Link to="/dashboard/company" className="btn btn-outline" style={{ gap: '0.4rem' }}>
+            <ArrowLeft size={15} />
+            <span>Dashboard</span>
+          </Link>
+          <button
+            onClick={handleSave}
+            className="btn btn-primary"
+            disabled={saving}
+            style={{ minWidth: '150px', gap: '0.45rem' }}
+          >
+            {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
+            <span>{saving ? 'Saving...' : 'Save Profile'}</span>
+          </button>
+        </div>
       </div>
 
       {message.text && (
@@ -165,7 +173,7 @@ export const CompanyProfilePage = () => {
       <div
         className="card"
         style={{
-          marginBottom: '1.5rem',
+          marginBottom: '1.75rem',
           backgroundColor:
             verificationStatus === 'verified'
               ? 'var(--success-bg)'
@@ -182,11 +190,11 @@ export const CompanyProfilePage = () => {
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
           {verificationStatus === 'verified' ? (
-            <CheckCircle2 size={26} color="var(--success)" style={{ marginTop: '2px' }} />
+            <CheckCircle2 size={26} style={{ color: 'var(--success-text)', marginTop: '2px', flexShrink: 0 }} />
           ) : verificationStatus === 'rejected' ? (
-            <ShieldAlert size={26} color="var(--danger)" style={{ marginTop: '2px' }} />
+            <ShieldAlert size={26} style={{ color: 'var(--danger-text)', marginTop: '2px', flexShrink: 0 }} />
           ) : (
-            <Clock size={26} color="var(--warning)" style={{ marginTop: '2px' }} />
+            <Clock size={26} style={{ color: 'var(--warning-text)', marginTop: '2px', flexShrink: 0 }} />
           )}
 
           <div style={{ flex: 1 }}>
@@ -196,38 +204,40 @@ export const CompanyProfilePage = () => {
                   fontWeight: 700,
                   fontSize: '1.05rem',
                   textTransform: 'uppercase',
+                  letterSpacing: '0.02em',
                   color:
                     verificationStatus === 'verified'
-                      ? '#166534'
+                      ? 'var(--success-text)'
                       : verificationStatus === 'rejected'
-                      ? '#991b1b'
-                      : '#92400e'
+                      ? 'var(--danger-text)'
+                      : 'var(--warning-text)'
                 }}
               >
                 Verification Status: {verificationStatus}
               </span>
             </div>
 
-            <p style={{ marginTop: '0.25rem', fontSize: '0.875rem', color: 'var(--text-main)' }}>
+            <p style={{ marginTop: '0.35rem', fontSize: '0.875rem', color: 'var(--text-main)', lineHeight: 1.5 }}>
               {verificationStatus === 'verified'
-                ? `Accredited Campus Hiring Partner. Verified on ${new Date(verifiedAt).toLocaleDateString()}. You can publish job drives directly to students.`
+                ? `Accredited Campus Hiring Partner. Verified on ${new Date(verifiedAt || Date.now()).toLocaleDateString()}. Your company is authorized to publish campus recruitment drives.`
                 : verificationStatus === 'rejected'
                 ? 'Your company verification request was declined by the placement cell. Please review admin feedback below or update your credentials.'
-                : 'Your profile is awaiting administrative review by the College Placement Officer. Once verified, your job postings will be published to graduating students.'}
+                : 'Your profile is awaiting administrative review by the College Placement Officer. Once verified, your job postings will be published directly to graduating students.'}
             </p>
 
             {adminFeedback && (
               <div
                 style={{
-                  marginTop: '0.75rem',
-                  padding: '0.6rem 0.85rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                  marginTop: '0.85rem',
+                  padding: '0.75rem 1rem',
+                  backgroundColor: 'var(--bg-subtle)',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.85rem',
                   border: '1px solid var(--border-light)'
                 }}
               >
-                <strong>Admin Feedback:</strong> {adminFeedback}
+                <strong style={{ color: 'var(--text-main)' }}>Placement Cell Feedback:</strong>{' '}
+                <span style={{ color: 'var(--text-muted)' }}>{adminFeedback}</span>
               </div>
             )}
           </div>
@@ -236,13 +246,13 @@ export const CompanyProfilePage = () => {
 
       <form onSubmit={handleSave}>
         {/* Company Organization Details */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
               <h2 className="card-title">Organization Overview</h2>
               <p className="card-subtitle">Public company details visible to campus applicants</p>
             </div>
-            <Building2 size={20} color="var(--role-company)" />
+            <Building2 size={20} style={{ color: 'var(--role-company)' }} />
           </div>
 
           <div className="grid-cols-2">
@@ -348,13 +358,13 @@ export const CompanyProfilePage = () => {
         </div>
 
         {/* Recruiter Contact Information */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card" style={{ marginBottom: '1.75rem' }}>
           <div className="card-header">
             <div>
               <h2 className="card-title">Recruiter Contact Information</h2>
               <p className="card-subtitle">Placement officer point of contact for recruitment drives</p>
             </div>
-            <Users size={20} color="var(--role-company)" />
+            <Users size={20} style={{ color: 'var(--role-company)' }} />
           </div>
 
           <div className="grid-cols-2">
@@ -414,9 +424,9 @@ export const CompanyProfilePage = () => {
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary btn-lg"
             disabled={saving}
-            style={{ minWidth: '160px' }}
+            style={{ minWidth: '180px', gap: '0.5rem' }}
           >
             {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
             <span>{saving ? 'Saving...' : 'Save Company Profile'}</span>
