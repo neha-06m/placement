@@ -1,0 +1,13 @@
+{
+  "name": "placemate-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PlaceMate - Campus Placement Management System",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "start:backend": "npm --prefix backend start",
+    "test:backend": "npm --prefix backend test",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}
